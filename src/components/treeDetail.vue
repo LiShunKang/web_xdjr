@@ -3,24 +3,33 @@
         <!-- <div class="nav">当前位置：{{nodeInfo ? nodeInfo.label : ''}}</div> -->
         <div class="dataSet">
             <div class="dataLi">
-                <div class="sum">已注册：{{dataSet.register}}</div>
-                <div class="type">
-                    <p>台区：{{dataSet.register}}</p>
-                    <p>站房：{{dataSet.register}}</p>
+                <div class="infoBox">
+                    <div class="iconBox"><i class="el-icon-s-order"></i></div>
+                    <div class="dataBox">
+                        <p>已注册<span style="color: #DEB23F">{{dataSet.register}}</span></p>
+                        <p>台区<span style="color: #14989A">{{dataSet.register}}</span></p>
+                        <p>站房<span style="color: #14989A">{{dataSet.register}}</span></p>
+                    </div>
                 </div>
             </div>
             <div class="dataLi">
-                <div class="sum">在线：{{dataSet.online}}</div>
-                <div class="type">
-                    <p>台区：{{dataSet.online}}</p>
-                    <p>站房：{{dataSet.online}}</p>
+                <div class="infoBox">
+                    <div class="iconBox"><i class="el-icon-s-platform"></i></div>
+                    <div class="dataBox">
+                        <p>在线<span style="color: #DEB23F">{{dataSet.online}}</span></p>
+                        <p>台区<span style="color: #14989A">{{dataSet.online}}</span></p>
+                        <p>站房<span style="color: #14989A">{{dataSet.online}}</span></p>
+                    </div>
                 </div>
             </div>
             <div class="dataLi">
-                <div class="sum">已投运：{{dataSet.transport}}</div>
-                <div class="type">
-                    <p>台区：{{dataSet.transport}}</p>
-                    <p>站房：{{dataSet.transport}}</p>
+                <div class="infoBox">
+                    <div class="iconBox"><i class="el-icon-s-claim"></i></div>
+                    <div class="dataBox">
+                        <p>已投运<span style="color: #DEB23F">{{dataSet.transport}}</span></p>
+                        <p>台区<span style="color: #14989A">{{dataSet.transport}}</span></p>
+                        <p>站房<span style="color: #14989A">{{dataSet.transport}}</span></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -31,8 +40,8 @@
                 </el-form-item>
                 <el-form-item label="设备类型">
                     <el-select v-model="searchForm.type" placeholder="请选择" style="width:150px">
-                        <el-option label="台区" :value="1"></el-option>
-                        <el-option label="站房" :value="2"></el-option>
+                        <el-option label="台区" :value="3"></el-option>
+                        <el-option label="站房" :value="10"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="终端ESN">
@@ -40,7 +49,7 @@
                 </el-form-item>
                 <el-form-item label="注册状态">
                     <el-select v-model="searchForm.register" placeholder="请选择" style="width:150px">
-                        <el-option label="未注册" :value="1"></el-option>
+                        <el-option label="注册失败" :value="1"></el-option>
                         <el-option label="已注册" :value="2"></el-option>
                     </el-select>
                 </el-form-item>
@@ -56,25 +65,25 @@
                         <el-option label="已投运" :value="2"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-button type="primary" @click="search">查询</el-button>
-                <el-button @click="resetSearch">重置</el-button>
-                <div style="float:right">
-                   <el-button type="primary" @click="add">向导接入</el-button>
+                <el-button @click="search" icon="el-icon-search">查询</el-button>
+                <el-button @click="resetSearch" icon="el-icon-refresh-right">重置</el-button>
+                <div style="float:right;margin-bottom: 20px">
+                   <el-button @click="add">向导接入</el-button>
                     <el-button @click="exportData">导出</el-button> 
                 </div>
             </el-form>
         </div>
         <div class="table">
-            <el-table :data="tableData" style="width: 100%" border
-            :header-cell-style="{textAlign: 'center',background: 'rgb(17,76,120)', color: '#FFF'}" 
+            <el-table :data="tableData" style="width: 100%"
+            :header-cell-style="{textAlign: 'center',background: '#F3F3F3', color: '#333'}" 
             :cell-style="{ textAlign: 'center', color: '#333'}">
                 <el-table-column type="index"></el-table-column>
                 <el-table-column prop="transformerName" label="关联设备" ></el-table-column>
                 <el-table-column label="设备类型">
                     <template slot-scope="scope">
                         <div>
-                            <span type="text">{{scope.row.type !== 1 ? '站房' : ''}}</span>
-                            <span type="text">{{scope.row.type === 1 ? '台区' : ''}}</span>
+                            <span type="text">{{scope.row.type === 10 ? '站房' : ''}}</span>
+                            <span type="text">{{scope.row.type === 3 ? '台区' : ''}}</span>
                         </div>
                     </template>
                 </el-table-column>
@@ -82,24 +91,24 @@
                 <el-table-column label="注册状态">
                     <template slot-scope="scope">
                         <div>
-                            <span type="text">{{scope.row.state !== 3 ? '未注册' : ''}}</span>
-                            <span type="text">{{scope.row.state === 3 ? '已注册' : ''}}</span>
+                            <span type="text" class="danger">{{scope.row.state !== 3 ? '注册失败' : ''}}</span>
+                            <span type="text" class="success">{{scope.row.state === 3 ? '已注册' : ''}}</span>
                         </div>
                     </template>
                 </el-table-column>
                 <el-table-column label="在线状态">
                     <template slot-scope="scope">
                         <div>
-                            <span type="text">{{scope.row.online === 0 ? '离线' : ''}}</span>
-                            <span type="text">{{scope.row.online === 1 ? '在线' : ''}}</span>
+                            <span type="text" class="danger">{{scope.row.online === 0 ? '离线' : ''}}</span>
+                            <span type="text" class="success">{{scope.row.online === 1 ? '在线' : ''}}</span>
                         </div>
                     </template>
                 </el-table-column>
                 <el-table-column label="投运状态">
                     <template slot-scope="scope">
                         <div>
-                            <span type="text">{{scope.row.transport === 1 ? '未投运' : ''}}</span>
-                            <span type="text">{{scope.row.transport !== 1 ? '已投运' : ''}}</span>
+                            <span type="text" class="danger">{{scope.row.transport === 1 ? '未投运' : ''}}</span>
+                            <span type="text" class="success">{{scope.row.transport !== 1 ? '已投运' : ''}}</span>
                         </div>
                     </template>
                 </el-table-column>
@@ -121,7 +130,7 @@
                 :page-size="pageSize"
                 layout="total, sizes, prev, pager, next, jumper"
                 style="text-align: right; margin-top: 20px"
-                :total="total">
+                :total="total" background>
             </el-pagination>
         </div>
         <CreateNew :detailId="detailId" :visible="visible" title="向导接入" @handleClose="closeDialog"/>
@@ -153,7 +162,7 @@ export default {
                 {
                     id:1,
                     transformerName:"环山河",
-                    type: 1,
+                    type: 10,
                     esn: '1234567890',
                     date:"2021-02-26 12:00:00",
                     state:1,
@@ -164,7 +173,7 @@ export default {
                 {
                     id:2,
                     transformerName:"环山河",
-                    type: 1,
+                    type: 10,
                     esn: '1234567890',
                     date:"2021-02-26 12:00:00",
                     state:2,
@@ -175,7 +184,7 @@ export default {
                 {
                     id:3,
                     transformerName:"环山河",
-                    type: 2,
+                    type: 3,
                     esn: '1234567890',
                     date:"2021-02-26 12:00:00",
                     state:3,
@@ -186,7 +195,7 @@ export default {
                 {
                     id:4,
                     transformerName:"环山河",
-                    type: 2,
+                    type: 3,
                     esn: '1234567890',
                     date:"2021-02-26 12:00:00",
                     state:3,
@@ -345,38 +354,103 @@ export default {
         display: flex;
         justify-content: space-between;
         margin: 0 0 20px 0;
-        // text-align: center;
-        font-size: 20px;
         .dataLi{
             width: 30%;
-            height: 100px;
-            background: #409EFF;
+            height: 125px;
+            box-sizing: border-box;
+            border: 1px solid #14989A;
+            border-top: 15px solid #14989A;
             border-radius: 10px;
-            color: #FFF;
             display: flex;
-            .sum{
-                line-height: 100px;
-                flex: 1;
-                padding: 0 20px;
-                box-sizing: border-box;
-            }
-            .type{
-                flex: 1;
-                p{
+            .infoBox{
+                width: 100%;
+                height: 110px;
+                display: flex;
+                .iconBox{
+                    width: 50px;
                     height: 50px;
-                    line-height: 50px;
-                    margin: 0;
-                    padding: 0 20px;
                     box-sizing: border-box;
+                    background: #14989A;
+                    box-sizing: border-box;
+                    margin: 30px 20px;
+                    font-size: 35px;
+                    line-height: 50px;
+                    text-align: center;
+                    border-radius: 5px;
+                    color: #FFF;
+                    &::after {
+                        content: '';
+                        display: block;
+                        width: 52px;
+                        height: 52px;
+                        border: 1px solid #14989A;
+                        position: relative;
+                        top: -52px;
+                        left: -2px;
+                        border-radius: 5px;
+                    }
+                }
+                .dataBox{
+                    display: flex;
+                    color: #000;
+                    flex: 1;
+                    line-height: 110px;
+                    p{
+                        flex: 1;
+                        margin: 0;
+                        span{
+                            padding-left: 10px;
+                        }
+                    }
                 }
             }
-            
         }
+    }
+    .danger {
+        // color: #F56C6C
+        color: #333
+    }
+    .success {
+        color: #333;
+        // color: #67C23A;
     }
 }
 </style>
-<style>
-body .el-table th.gutter {
-  display: table-cell !important;
+<style lang="scss">
+.treeDetail-container{
+    .el-table th.gutter {
+        display: table-cell !important;
+    }
+    .el-table__body .el-table__row.hover-row td {
+        background: #effff7;
+    }
+    .btnBox{
+        .el-button{
+            background: #14989A !important;
+            border-color: #14989A !important;
+            color: #FFF;
+            &:hover{
+                opacity: 0.8;
+            }
+        }
+    } 
+    .table{
+        .el-button{
+            color: #14989A;
+        }
+        .is-disabled{
+            color: #C0C4CC;
+        }
+    }
+    .el-pagination.is-background .el-pager li:not(.disabled) {
+        background-color: #fff;
+    }
+    .el-pagination.is-background .el-pager li:not(.disabled):hover {
+        color: #14989A;
+    }
+    .el-pagination.is-background .el-pager li:not(.disabled).active {
+        background-color: #14989A;
+        color: #fff;
+    }
 }
 </style>

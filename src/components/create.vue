@@ -186,7 +186,7 @@ export default {
             loading: false,
             activeName: "first",
             modelType: "台区名称：",
-            typeName:"22222",
+            typeName:"",
             addForm:{
                 type: "",
                 tqname:"",
