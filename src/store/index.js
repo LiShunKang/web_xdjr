@@ -4,12 +4,36 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  }
+
+    state: {
+        //这里放全局参数
+        orgId: '',
+        areaName: ''
+    },
+
+    mutations: {
+        //这里是set方法
+        setOrgId(state, orgId) {
+            state.orgId = orgId
+        },
+
+        setAreaName(state, areaName) {
+            state.areaName = areaName
+        }
+    },
+
+    getters: {
+        //get方法
+        getOrgId: state => state.orgId,
+        getAreaName: state => state.areaName,
+    },
+
+    actions: {
+        //这个部分我暂时用不上
+    },
+
+    modules: {
+        //这里是我自己理解的是为了给全局变量分组，所以需要写提前声明其他store文件，然后引入这里
+    }
 })
+

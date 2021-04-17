@@ -18,7 +18,7 @@
                                 <el-form :model="addForm" :rules="rules" ref="addForm" label-width="120px" size="small">
                                     <el-form-item label="设备类型：" prop="type" class="nameBox">
                                         <el-select v-model="addForm.type" style="width:240px" placeholder=" ">
-                                            <el-option label="台区" :value="1"></el-option>
+                                            <!-- <el-option label="台区" :value="1"></el-option> -->
                                             <el-option label="站房" :value="2"></el-option>
                                         </el-select>
                                     </el-form-item>
@@ -64,7 +64,7 @@
                                 <el-form :model="modelForm" :rules="rules" ref="modelForm" label-width="120px" size="small">
                                     <el-form-item label="设备类型：" prop="type" class="nameBox">
                                         <el-select v-model="modelForm.type" style="width:240px" placeholder=" ">
-                                            <el-option label="台区" :value="1"></el-option>
+                                            <!-- <el-option label="台区" :value="1"></el-option> -->
                                             <el-option label="站房" :value="2"></el-option>
                                         </el-select>
                                     </el-form-item>
@@ -76,8 +76,8 @@
                                     </el-form-item>
                                     <el-form-item label="选择站房：" prop="factory" v-if="modelForm.type === 2">
                                         <el-select v-model="modelForm.factory" filterable remote placeholder="请输入"
-                                            :remote-method="remoteMethod" :loading="loading" style="width: 240px" @change="showZfInfo">
-                                            <el-option v-for="item in stationList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                                            :remote-method="remoteMethod" :loading="loading" style="width: 240px" no-data-text="无匹配的站房信息" @change="showZfInfo">
+                                            <el-option v-for="item in factoryList" :key="item.value" :label="item.label" :value="item.value"></el-option>
                                         </el-select>
                                     </el-form-item>
                                     <div class="stationInfo" v-show="modelForm.isShow1">
@@ -104,8 +104,8 @@
                             </el-form-item>
                             <el-form-item label="ESN：" prop="esn">
                                 <el-input v-model="relationForm.esn" style="width:240px"></el-input>
-                                <el-popover placement="top-start" title="标题" width="200" trigger="hover">
-                                    <div>待检索设备的线路、厂站、区域信息必须维护完整</div>
+                                <el-popover placement="top-start" title="ESN码说明" width="200" trigger="hover">
+                                    <div>ESN码用于标识一个融合终端。每个融合终端具备唯一的ESN码，可通过登录融合终端通过专用命令查询融合终端的ESN码</div>
                                     <img slot="reference" class="titleImg" src="../assets/image/shuoming.png" />
                                 </el-popover>
                             </el-form-item>
@@ -118,8 +118,8 @@
                                     :value="item.value">
                                     </el-option>
                                 </el-select>
-                                <el-popover placement="top-start" title="标题" width="200" trigger="hover">
-                                    <div>12334456</div>
+                                <el-popover placement="top-start" title="产品型号说明" width="200" trigger="hover">
+                                    <div>每个融合终端都属于一类产品型号，物联管理平台通过产品型号管理和分类海量的融合终端。</div>
                                     <img slot="reference" class="titleImg" src="../assets/image/shuoming.png" />
                                 </el-popover>
                             </el-form-item>
@@ -132,10 +132,6 @@
                                     :value="item.value">
                                     </el-option>
                                 </el-select>
-                                <el-popover placement="top-start" title="标题" width="200" trigger="hover">
-                                    <div>12334456</div>
-                                    <img slot="reference" class="titleImg" src="../assets/image/shuoming.png" />
-                                </el-popover>
                             </el-form-item>
                             <el-form-item label="所属项目：" prop="project">
                                 <el-select v-model="relationForm.project" style="width:240px" placeholder=" ">
@@ -146,10 +142,6 @@
                                     :value="item.value">
                                     </el-option>
                                 </el-select>
-                                <el-popover placement="top-start" title="标题" width="200" trigger="hover">
-                                    <div>12334456</div>
-                                    <img slot="reference" class="titleImg" src="../assets/image/shuoming.png" />
-                                </el-popover>
                             </el-form-item>
                         </el-form>
                     </div>
@@ -166,6 +158,7 @@
     </el-dialog>
 </template>
 <script>
+import { getZfListByName, nextOne, getListInfo } from "../api/api"
 export default {
     data(){
         var inputEsn = (rule, value, callback) => {
@@ -188,7 +181,7 @@ export default {
             modelType: "台区名称：",
             typeName:"",
             addForm:{
-                type: "",
+                type: 2,
                 tqname:"",
                 zfname:"",
                 num:"",
@@ -197,7 +190,7 @@ export default {
                 relation: false
             }, // 录入模型form
             modelForm:{
-                type: "",
+                type: 2,
                 station:"",
                 factory:"",
                 name:"",
@@ -346,16 +339,18 @@ export default {
         getFactoryList(){
             this.factoryList = [{label:"站房1",value:1},{label:"站房2",value:2},{label:"站房3",value:3}]
         },
-        // 获取产品
-        getProductList(){
+        // 获取产品、工厂、项目
+        getListData(){
+            getListInfo().then(res=>{
+                if(res.code == 2000){
+                    console.log(res)
+                    this.productList = res.sscp;
+                    this.manufactorList = res.sscj;
+                    this.projectList = res.ssxm
+                }
+            })
             this.productList = [{label:"产品1",value:1},{label:"产品2",value:2},{label:"产品3",value:3}]
-        },
-        // 获取厂家
-        getManufactorList(){
             this.manufactorList = [{label:"厂家1",value:1},{label:"厂家2",value:2},{label:"厂家3",value:3}]
-        },
-        // 获取项目
-        getProjectList(){
             this.projectList = [{label:"项目1",value:1},{label:"项目2",value:2},{label:"项目3",value:3}]
         },
         // 获取变量
@@ -381,13 +376,17 @@ export default {
             }else{
                 this.modelForm.isShow2 = false
             }
+            let obj = {}
+            obj = this.factoryList.find(item=>{
+                return item.value === value
+            })
+            this.typeName = obj.value
+            this.relationForm.terminalName = obj.value + '网关'
         },
         // 下一步
         nextStep(step){
             if(step === 0){
-                this.getProductList()
-                this.getManufactorList()
-                this.getProjectList()
+                this.getListData()
                 if(this.activeName === "first"){
                     this.$refs['addForm'].validate((valid) => {
                         if(valid){
@@ -409,6 +408,15 @@ export default {
                             } else{
                                 this.modelType = "台区名称："
                             }
+                            let obj = {
+                                tqId: this.modelForm.factory
+                            }
+                            console.log(obj)
+                            nextOne(obj).then(res=>{
+                                console.log(res)
+                            })
+                            
+                            console.log(this.typeName)
                             this.$refs['modelForm'].resetFields();
                             this.step = 1
                         }
@@ -437,7 +445,7 @@ export default {
         },
         resetAddForm(){
             this.addForm = {
-                type: "",
+                type: 2,
                 tqname:"",
                 zfname:"",
                 num:"",
@@ -451,7 +459,7 @@ export default {
         },
         resetModelForm(){
             this.modelForm = {
-                type: '',
+                type: 2,
                 station:"",
                 factory:"",
                 name:"",
@@ -463,15 +471,28 @@ export default {
                 this.$refs['modelForm'].resetFields();
             }
         },
-        remoteMethod(query) {
+        async remoteMethod(query) {
             let arr = []
             if (query !== '') {
+                let obj = {
+                    dev_type: '10',
+                    orgId: this.$store.getters.getOrgId,
+                    name: query
+                }
                 this.loading = true;
+                // let getList = [{'选项1:1:pm-1': '选项1'},{'选项2:1:pm-2': '选项2'},{'选项11:11:pm-11': '选项1'},{'选项123:123:pm-123': '选项123'}]
                 let Allarr = [{value:"1",id:1},{value:"12",id:2},{value:"12138",id:3},{value:"2",id:4},{value:"23",id:5}]
-                this.loading = false;
+                await getZfListByName(obj).then(res=>{
+                    if(res.code == 0){
+                        Allarr = res.list
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
                 arr = Allarr.filter(item => {
                     return item.value.toLowerCase().indexOf(query.toLowerCase()) > -1;
                 });
+                this.loading = false;
             } else {
                 arr = [];
             }
