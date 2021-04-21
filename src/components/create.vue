@@ -3,6 +3,7 @@
         :title="title"
         :visible.sync="dialogVisible"
         width="60%"
+        class="dialogContainer"
         @close="handleClose">
         <el-card class="box-card">
             <el-steps :active="step" align-center process-status="finish" style="margin: 10px 0 10px 0">
@@ -13,7 +14,7 @@
             <div class="formBox">
                 <div v-if="step === 0" style="margin: 20px 0">
                     <el-tabs type="border-card" v-model="activeName">
-                        <el-tab-pane label="录入模型" name="first">
+                        <el-tab-pane label="录入模型" name="first" v-if="false">
                             <div style="margin: 40px auto;width: 60%">
                                 <el-form :model="addForm" :rules="rules" ref="addForm" label-width="120px" size="small">
                                     <el-form-item label="设备类型：" prop="type" class="nameBox">
@@ -110,7 +111,7 @@
                                 </el-popover>
                             </el-form-item>
                             <el-form-item label="所属产品：" prop="product">
-                                <el-select v-model="relationForm.product" style="width:240px" placeholder=" ">
+                                <el-select v-model="relationForm.product" style="width:240px" placeholder=" " @change="changeProduct">
                                     <el-option
                                     v-for="item in productList"
                                     :key="item.value"
@@ -146,8 +147,8 @@
                         </el-form>
                     </div>
                 </div>
-                <div v-if="step === 2" style="margin: 20px 0">
-                    <div style="widthL50%;height:200px;background:#999"></div>
+                <div v-if="step === 2" style="margin: 20px 0;height: 500px">
+                    <iframe style="height: 100%;width: 100%" :src="iframeSrc"></iframe>
                 </div>
                 <div style="text-align:right;margin-right:10%">
                     <el-button type="primary" size="mini" v-if="step !== 2" @click="nextStep(step)">下一步</el-button>
@@ -158,14 +159,14 @@
     </el-dialog>
 </template>
 <script>
-import { getZfListByName, nextOne, getListInfo } from "../api/api"
+import { getZfListByName, nextOne, getListInfo, addZfInfo, getLineSrc } from "../api/api"
 export default {
     data(){
         var inputEsn = (rule, value, callback) => {
             if (!value) {
                 return callback(new Error('ESN不能为空'));
             } else {
-                let reg = /^[0-9]*$/
+                let reg = /^[0-9a-zA-Z]*$/
                 if(!reg.test(value)){
                     return callback(new Error('ESN只能为数字'));
                 }else{
@@ -252,7 +253,8 @@ export default {
             productList:[],
             manufactorList:[],
             projectList:[],
-            variableList:[]
+            variableList:[],
+            iframeSrc: ''
         }
     },
     props:{
@@ -285,10 +287,8 @@ export default {
                 }
             } else if (val === 'second'){
                 this.resetAddForm();
-                if(this.stationList && this.stationList.length === 0){
-                    // this.getStationList()
-                    // this.getFactoryList()
-                }
+                // if(this.stationList && this.stationList.length === 0){
+                // }
             }
         },
         // 传入id 进行初始化赋值
@@ -321,6 +321,8 @@ export default {
     methods:{
         getInfo(){
             console.log(this.detailId)
+            this.step = 2
+            this.getIframeSrc(this.detailId)
         },
         // 关闭
         handleClose(){
@@ -331,27 +333,54 @@ export default {
         getNameRuleList(){
             this.nameRuleList = [{label:"*QF",value:1},{label:"DP",value:2},{label:"*EF*",value:3}]
         },
-        // 获取台区
-        getStationList(){
-            this.stationList = [{label:"台区1",value:1},{label:"台区2",value:2},{label:"台区3",value:3}]
-        },
-        // 获取站房
-        getFactoryList(){
-            this.factoryList = [{label:"站房1",value:1},{label:"站房2",value:2},{label:"站房3",value:3}]
-        },
         // 获取产品、工厂、项目
         getListData(){
             getListInfo().then(res=>{
-                if(res.code == 2000){
-                    console.log(res)
-                    this.productList = res.sscp;
-                    this.manufactorList = res.sscj;
-                    this.projectList = res.ssxm
+                console.log(res)
+                // 产品列表
+                let cpArr = [];
+                let cpKeys = Object.keys(res.sscp);
+                let cpValues = Object.values(res.sscp);
+                for(let i = 0; i < cpKeys.length; i++){
+                    let obj = {
+                        value: cpKeys[i],
+                        label: cpValues[i]
+                    }
+                    cpArr.push(obj)
                 }
+                this.productList = cpArr;
+                console.log(this.productList)
+
+                // 厂家列表
+                let cjArr = [];
+                let cjKeys = Object.keys(res.cpcj);
+                let cjValues = Object.values(res.cpcj);
+                for(let i = 0; i < cjKeys.length; i++){
+                    let obj = {
+                        value: cjKeys[i],
+                        label: cjValues[i]
+                    }
+                    cjArr.push(obj)
+                }
+                this.manufactorList = cjArr;
+                console.log(this.manufactorList)
+
+                let xmArr = [];
+                let xmKeys = Object.keys(res.ssxm);
+                let xmValues = Object.values(res.ssxm);
+                for(let i = 0; i < xmValues.length; i++){
+                    let obj = {
+                        value: xmKeys[i],
+                        label: xmValues[i]
+                    }
+                    if(xmValues[i] == '方天项目'){
+                        this.relationForm.project = xmKeys[i]
+                    }
+                    xmArr.push(obj)
+                }
+                this.projectList = xmArr;
+                console.log(this.projectList)
             })
-            this.productList = [{label:"产品1",value:1},{label:"产品2",value:2},{label:"产品3",value:3}]
-            this.manufactorList = [{label:"厂家1",value:1},{label:"厂家2",value:2},{label:"厂家3",value:3}]
-            this.projectList = [{label:"项目1",value:1},{label:"项目2",value:2},{label:"项目3",value:3}]
         },
         // 获取变量
         getVariableList(){
@@ -367,21 +396,19 @@ export default {
                 this.modelForm.isShow1 = false
             }
         },
-        // 选择站房后，展示站房信息
+        // 选择站房后
         showZfInfo(value){
-            this.modelForm.name="adhjas"
-            this.modelForm.num= 5
-            if(value !== ""){
-                this.modelForm.isShow2 = true
-            }else{
-                this.modelForm.isShow2 = false
-            }
+            // if(value !== ""){
+            //     this.modelForm.isShow2 = true
+            // }else{
+            //     this.modelForm.isShow2 = false
+            // }
             let obj = {}
             obj = this.factoryList.find(item=>{
                 return item.value === value
             })
-            this.typeName = obj.value
-            this.relationForm.terminalName = obj.value + '网关'
+            this.typeName = obj.label
+            this.relationForm.terminalName = obj.label + '网关'
         },
         // 下一步
         nextStep(step){
@@ -395,7 +422,6 @@ export default {
                             } else{
                                 this.modelType = "台区名称："
                             }
-                            this.$refs['addForm'].resetFields();
                             this.step = 1;
                             
                         }
@@ -409,24 +435,66 @@ export default {
                                 this.modelType = "台区名称："
                             }
                             let obj = {
-                                tqId: this.modelForm.factory
+                                byqId: this.modelForm.factory,
+                                areaName: this.$store.getters.getAreaName
                             }
                             console.log(obj)
                             nextOne(obj).then(res=>{
+                                console.log('第一步')
                                 console.log(res)
+                                if(res.is_success){
+                                    this.step = 1
+                                }else{
+                                    this.$message({
+                                        type: 'error',
+                                        message: res.errormsg
+                                    })
+                                }
                             })
-                            
                             console.log(this.typeName)
-                            this.$refs['modelForm'].resetFields();
-                            this.step = 1
                         }
                     })
                 }
             }else if(step === 1){
                 this.$refs['relationForm'].validate((valid) => {
                     if(valid){
-                        this.$refs['relationForm'].resetFields();
-                        this.step = 2
+                        let obj = {
+                            gateway_name: this.relationForm.terminalName,
+                            gateway_code: this.relationForm.esn,
+                            org_id: this.$store.getters.getOrgId,
+                            pms_id: this.modelForm.factory,
+                            // facId: this.relationForm.manufactor,
+                            fac_id: "",
+                            pjId: this.relationForm.project,
+                            pdId: this.relationForm.product,
+                            relyType: "10",
+                            isFixed: "F"
+                        }
+                        addZfInfo(obj).then(res=>{
+                            console.log('第二步')
+                            console.log(res)
+                            if(res.code == 2000){
+                                this.$message({
+                                    type: 'success',
+                                    message: '注册成功'
+                                })
+                                this.$emit("handleSuccess")
+                                this.getIframeSrc(this.modelForm.factory)
+                                this.step = 2
+                            }else{
+                                let errMsg = '注册失败'
+                                if(JSON.parse(res.result).errMsg){
+                                    errMsg = JSON.parse(res.result).errMsg
+                                }
+                                this.$message({
+                                    type: 'error',
+                                    message: errMsg
+                                })
+                                this.$emit("handleSuccess")
+                                this.handleClose()
+                            }
+                        })
+                        
                     }
                 })
             }else{
@@ -439,9 +507,8 @@ export default {
             this.activeName = "first";
             this.resetAddForm();
             this.resetModelForm();
-            if(this.$refs['relationForm']){
-                this.$refs['relationForm'].resetFields();
-            }
+            this.resetrelationForm();
+            
         },
         resetAddForm(){
             this.addForm = {
@@ -471,8 +538,21 @@ export default {
                 this.$refs['modelForm'].resetFields();
             }
         },
+        resetrelationForm(){
+            this.relationForm = {
+                terminalName:"",
+                esn:"",
+                product:"",
+                manufactor:"",
+                project:""
+            }
+            if(this.$refs['relationForm']){
+                this.$refs['relationForm'].resetFields();
+            }
+        },
+        // 根据关键字获取站房列表
         async remoteMethod(query) {
-            let arr = []
+            // let arr = []
             if (query !== '') {
                 let obj = {
                     dev_type: '10',
@@ -480,28 +560,61 @@ export default {
                     name: query
                 }
                 this.loading = true;
-                // let getList = [{'选项1:1:pm-1': '选项1'},{'选项2:1:pm-2': '选项2'},{'选项11:11:pm-11': '选项1'},{'选项123:123:pm-123': '选项123'}]
-                let Allarr = [{value:"1",id:1},{value:"12",id:2},{value:"12138",id:3},{value:"2",id:4},{value:"23",id:5}]
+                let Allarr = []
                 await getZfListByName(obj).then(res=>{
-                    if(res.code == 0){
-                        Allarr = res.list
+                    console.log(res)
+                    console.log(res.data)
+                    if(res.code == 2000){
+                        let objArr = Object.values(res.data)
+                        console.log(objArr)
+                        objArr.filter(item=>{
+                            let setArr = item.split(':')
+                            let obj = {
+                                value: setArr[0],
+                                pmsId: setArr[1],
+                                label: setArr[2]
+                            }
+                            // console.log(obj)
+                            Allarr.push(obj)
+                        })
+                        console.log('Allarr')
+                        console.log(Allarr)
+                        this.factoryList = Allarr
                     }
+                    
                 }).catch(err=>{
                     console.log(err)
                 })
-                arr = Allarr.filter(item => {
-                    return item.value.toLowerCase().indexOf(query.toLowerCase()) > -1;
-                });
                 this.loading = false;
             } else {
-                arr = [];
+                this.loading = false;
             }
-            if(this.modelForm.type === 1){
-                this.stationList = arr
-                console.log(this.stationList)
-            }else{
-                this.factoryList = arr
+            // if(this.modelForm.type === 1){
+            //     this.stationList = arr
+            // }else{
+            //     this.factoryList = arr
+            //     console.log(this.factoryList)
+            // }
+        },
+        // 选择产品
+        changeProduct(value){
+            this.relationForm.manufactor = ''
+            console.log(value)
+            let obj = {}
+            obj = this.productList.find(item=>{
+                return item.value === value
+            })
+            console.log(obj)
+            this.relationForm.manufactor = obj.label
+        },
+        getIframeSrc(id){
+            let obj = {
+                zfId: id,
+                feederId:''
             }
+            getLineSrc(obj).then(res=>{
+                this.iframeSrc = 'http://21.47.224.120:19098/graph/Navigator.html?isClient=1;menubarshow=0;graph=' + res.graphName
+            })
         }
     }
 }
@@ -531,10 +644,5 @@ export default {
         left: 10px;
     }
     
-}
-</style>
-<style>
-.box-card .el-step__icon-inner {
-    font-size: 40px !important;
 }
 </style>

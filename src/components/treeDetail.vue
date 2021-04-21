@@ -6,10 +6,8 @@
                 <div class="infoBox">
                     <div class="iconBox"><i class="el-icon-s-order"></i></div>
                     <div class="dataBox">
-                        <p>已注册<span style="color: #DEB23F">{{dataSet.register}}</span></p>
-                        <p>未注册<span style="color: #DEB23F">{{dataSet.noregister}}</span></p>
-                        <!-- <p>台区<span style="color: #14989A">{{dataSet.noregister}}</span></p>
-                        <p>站房<span style="color: #14989A">{{dataSet.zfregister}}</span></p> -->
+                        <p>已注册<span style="color: #14989A">{{dataSet.register ? dataSet.register : 0}}</span></p>
+                        <p>未注册<span style="color: #F56C6C">{{dataSet.noregister ? dataSet.noregister : 0}}</span></p>
                     </div>
                 </div>
             </div>
@@ -17,11 +15,9 @@
                 <div class="infoBox">
                     <div class="iconBox"><i class="el-icon-s-platform"></i></div>
                     <div class="dataBox">
-                        <p>未激活<span style="color: #DEB23F">{{dataSet.noActive}}</span></p>
-                        <p>在线<span style="color: #DEB23F">{{dataSet.online}}</span></p>
-                        <p>离线<span style="color: #DEB23F">{{dataSet.offline}}</span></p>
-                        <!-- <p>台区<span style="color: #14989A">{{dataSet.offline}}</span></p>
-                        <p>站房<span style="color: #14989A">{{dataSet.zfonline}}</span></p> -->
+                        <p>在线<span style="color: #14989A">{{dataSet.online ? dataSet.online : 0}}</span></p>
+                        <p>离线<span style="color: #F56C6C">{{dataSet.offline ? dataSet.offline : 0}}</span></p>
+                        <p>未激活<span style="color: #FF00FF">{{dataSet.noActive ? dataSet.noActive : 0}}</span></p>
                     </div>
                 </div>
             </div>
@@ -29,10 +25,8 @@
                 <div class="infoBox">
                     <div class="iconBox"><i class="el-icon-s-claim"></i></div>
                     <div class="dataBox">
-                        <p>已投运<span style="color: #DEB23F">{{dataSet.transport}}</span></p>
-                        <p>未投运<span style="color: #DEB23F">{{dataSet.ontransport}}</span></p>
-                        <!-- <p>台区<span style="color: #14989A">{{dataSet.tqtransport}}</span></p>
-                        <p>站房<span style="color: #14989A">{{dataSet.zftransport}}</span></p> -->
+                        <p>已投运<span style="color: #14989A">{{dataSet.transport ? dataSet.transport : 0}}</span></p>
+                        <p>未投运<span style="color: #F56C6C">{{dataSet.ontransport ? dataSet.ontransport : 0}}</span></p>
                     </div>
                 </div>
             </div>
@@ -100,17 +94,17 @@
                 <el-table-column label="注册状态">
                     <template slot-scope="scope">
                         <div>
-                            <span type="text" class="danger">{{scope.row.status === 1 ? '未注册' : ''}}</span>
-                            <span type="text" class="success">{{scope.row.status === 2 ? '已注册' : ''}}</span>
+                            <span type="text">{{scope.row.status === 1 ? '未注册' : ''}}</span>
+                            <span type="text">{{scope.row.status === 2 ? '已注册' : ''}}</span>
                         </div>
                     </template>
                 </el-table-column>
                 <el-table-column label="在线状态">
                     <template slot-scope="scope">
                         <div>
-                            <span type="text" class="danger">{{scope.row.is_online === 2 ? '离线' : ''}}</span>
-                            <span type="text" class="success">{{scope.row.is_online === 1 ? '在线' : ''}}</span>
-                            <span type="text" class="success">{{scope.row.is_online === 3 ? '未激活' : ''}}</span>
+                            <span type="text">{{scope.row.is_online === 2 ? '离线' : ''}}</span>
+                            <span type="text">{{scope.row.is_online === 1 ? '在线' : ''}}</span>
+                            <span type="text">{{scope.row.is_online === 3 ? '未激活' : ''}}</span>
                         </div>
                     </template>
                 </el-table-column>
@@ -122,12 +116,12 @@
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="people" label="所属项目"></el-table-column>
-                <el-table-column prop="creat_time" label="接入日期" min-width="85"></el-table-column>
+                <el-table-column prop="person" label="接入负责人"></el-table-column>
+                <el-table-column prop="CREAT_TIME" label="接入日期" min-width="85"></el-table-column>
                 <el-table-column fixed="right" label="操作" width="180">
                     <template slot-scope="scope">
                         <el-button @click="del(scope.row)" type="text" :disabled = "scope.row.status !== 3">注销</el-button>
-                        <el-button @click="inputExport(scope.row)" type="text">曲线浏览</el-button>
+                        <el-button @click="inputExport(scope.row)" type="text" v-if="false">曲线浏览</el-button>
                         <el-button @click="update(scope.row)" type="text">图形浏览</el-button>
                     </template>
                 </el-table-column>
@@ -143,7 +137,7 @@
                 :total="total" background>
             </el-pagination>
         </div>
-        <CreateNew :detailId="detailId" :visible="visible" title="向导接入" @handleClose="closeDialog"/>
+        <CreateNew :detailId="detailId" :visible="visible" @handleSuccess="search" title="向导接入" @handleClose="closeDialog"/>
         <AccessReport :visible="showAccessReport" title="曲线浏览" @handleClose="closeAccessReport"/>
     </div>
 </template>
@@ -166,67 +160,22 @@ export default {
                 ontransport: 0,
             },
             searchForm: {
-                type: '',
-                equipment: '',
-                esn: '',
-                register: '',
-                online: '',
-                transport: '',
+                type: null,
+                equipment: null,
+                esn: null,
+                register: null,
+                online: null,
+                transport: null,
                 time: []
             }, // 查询条件form
-            tableData:[
-                {
-                    id:1,
-                    rely_name:"环山河",
-                    type: 10,
-                    dev_label: '1234567890',
-                    creat_time:"2021-02-26 12:00:00",
-                    status:1,
-                    run_state: 0,
-                    is_online: 1,
-                    people:"镇江"
-                },
-                {
-                    id:2,
-                    rely_name:"环山河",
-                    type: 10,
-                    dev_label: '1234567890',
-                    creat_time:"2021-02-26 12:00:00",
-                    status:2,
-                    run_state: 1,
-                    is_online: 2,
-                    people:"镇江"
-                },
-                {
-                    id:3,
-                    rely_name:"环山河",
-                    type: 10,
-                    dev_label: '1234567890',
-                    creat_time:"2021-02-26 12:00:00",
-                    status:1,
-                    run_state: 0,
-                    is_online: 1,
-                    people:"镇江"
-                },
-                {
-                    id:4,
-                    rely_name:"环山河",
-                    type: 10,
-                    dev_label: '1234567890',
-                    creat_time:"2021-02-26 12:00:00",
-                    status:2,
-                    run_state: 0,
-                    is_online: 2,
-                    people:"镇江"
-                },
-            ], // 表格数据
+            tableData:[], // 表格数据
             detailId: '', // 当前行id
             visible: false,
             showAccessReport: false,
             currentPage: 1,
             pageNum: 1,
             pageSize: 20,
-            total: 100,
+            total: 0,
             searchObj: {}, //查询中间变量
         }
     },
@@ -254,11 +203,11 @@ export default {
         window.addEventListener('message', event => {
             console.log('ces',event.data)
             orgId = JSON.parse(event.data).orgId;
+            console.log(orgId)
             loginUsrName = JSON.parse(event.data).loginUsrName;
             this.saveMessage(orgId, loginUsrName)
+            this.search()
         })
-        this.getTopDivInfo()
-        this.search()
     },
     methods:{
         // 查询
@@ -282,17 +231,16 @@ export default {
                 orgId: this.$store.getters.getOrgId,
                 dev_type: "10"
             }
-            console.log(this.searchObj)
             this.getTable(this.searchObj)
         },
         resetSearch(){
             this.pageNum = 1;
             this.searchForm = {
-                // trname: '',
-                ESN: '',
-                state: '',
-                onlineState: '',
-                runState: '',
+                // trname: null,
+                ESN: null,
+                state: null,
+                onlineState: null,
+                runState: null,
                 time: [],
                 page: this.pageNum,
                 rows: this.pageSize
@@ -309,12 +257,15 @@ export default {
         // 获得表格数据
         getTable(obj){
             getTableData(obj).then(res=>{
+                console.log("表格数据")
+                console.log(res)
                 this.total = 0
                 if(res.code == 2000){
                     this.tableData = res.data
                     this.total = res.total
                 }
             })
+            this.getTopDivInfo()
         },
         // 获取顶部汇总数据
         getTopDivInfo(){
@@ -322,6 +273,10 @@ export default {
                 orgId: this.$store.getters.getOrgId
             }
             getTopInfo(obj).then(res=>{
+                console.log('顶部数据')
+                console.log(res)
+                console.log(res.code)
+                console.log(res.data)
                 if(res.code == 2000){
                     this.dataSet = {
                         register: res.data.REG_SUCCESS_SUM,
@@ -375,10 +330,35 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.$message({
-                    type: 'success',
-                    message: '导出成功!'
-                });
+                let startTime = null;
+                let endTime = null;
+                if(this.searchForm.time && this.searchForm.time.length !== 0){
+                startTime = this.changeTime(this.searchForm.time[0]);
+                endTime = this.changeTime(this.searchForm.time[1])
+                }
+                let url = '/dist/terminal/plzxController/dcZfExcel?'
+                if(this.searchForm.esn){
+                    url = url + 'ESN=' + this.searchForm.esn + "&"
+                }
+                if(this.searchForm.register){
+                    url = url + 'register_state=' + this.searchForm.register + "&"
+                }
+                if(this.searchForm.online){
+                    url = url + 'online_state=' + this.searchForm.online + "&"
+                }
+                if(this.searchForm.transport){
+                    url = url + 'run_state=' + this.searchForm.transport + "&"
+                }
+                if(this.searchForm.time && this.searchForm.time.length != 0){
+                    url = url + 'start_date=' + startTime + "&end_date=" + endTime + "&"
+                }
+                url = url.substring(0,url.length-1)
+                console.log(url)
+                window.location.href = url
+                // this.$message({
+                //     type: 'success',
+                //     message: '导出成功!'
+                // });
             }).catch(() => {
                 this.$message({
                     type: 'info',
@@ -395,6 +375,8 @@ export default {
                 type: 'warning'
             }).then(() => {
                 delData(id).then(res=>{
+                    console.log("注销")
+                    console.log(res)
                     if(res.code == 2000){
                         this.$message({
                             type: 'success',
@@ -415,12 +397,12 @@ export default {
                     message: '已取消'
                 });          
             });
-            console.log(row)
         },
         saveMessage(orgId,loginUsrName) {
             this.$store.commit('setOrgId', orgId);
             this.$store.commit('setAreaName', loginUsrName);
-        }
+            this.search()
+        },
     }
 }
 </script>
@@ -435,13 +417,15 @@ export default {
         box-sizing: border-box;
         height: 30px;
         line-height: 30px;
-        color: #409EFF;
+        // color: #409EFF;
+        @include primary_color;
     }
     .btnBox{
         margin: 20px 0 2px 0;
     }
     .btn{
-        color: #409EFF;
+        // color: #409EFF;
+        @include primary_color;
         cursor: pointer;
     }
     .dataSet{
@@ -453,8 +437,9 @@ export default {
             width: 30%;
             height: 125px;
             box-sizing: border-box;
-            border: 1px solid #14989A;
-            border-top: 15px solid #14989A;
+            border: 1px solid #000;
+            border-top: 15px solid #000;
+            @include border_color;
             border-radius: 10px;
             display: flex;
             .infoBox{
@@ -465,7 +450,8 @@ export default {
                     width: 50px;
                     height: 50px;
                     box-sizing: border-box;
-                    background: #14989A;
+                    // background: #14989A;
+                    @include background;
                     box-sizing: border-box;
                     margin: 30px 20px;
                     font-size: 35px;
@@ -478,7 +464,8 @@ export default {
                         display: block;
                         width: 52px;
                         height: 52px;
-                        border: 1px solid #14989A;
+                        border: 1px solid #000;
+                        @include border_color;
                         position: relative;
                         top: -52px;
                         left: -2px;
@@ -492,63 +479,16 @@ export default {
                     line-height: 110px;
                     p{
                         flex: 1;
+                        font-size: 18px;
                         margin: 0;
                         span{
                             padding-left: 10px;
+                            font-weight: 800;
                         }
                     }
                 }
             }
         }
-    }
-    .danger {
-        // color: #F56C6C
-        color: #333
-    }
-    .success {
-        color: #333;
-        // color: #67C23A;
-    }
-}
-</style>
-<style lang="scss">
-.treeDetail-container{
-    .el-table th.gutter {
-        display: table-cell !important;
-    }
-    .el-table__body .el-table__row.hover-row td {
-        background: #effff7;
-    }
-    .btnBox{
-        .el-button{
-            background: #14989A !important;
-            border-color: #14989A !important;
-            color: #FFF;
-            &:hover{
-                opacity: 0.8;
-            }
-        }
-        .is-disabled {
-            opacity: 0.7;
-        }
-    } 
-    .table{
-        .el-button{
-            color: #14989A;
-        }
-        .is-disabled{
-            color: #C0C4CC;
-        }
-    }
-    .el-pagination.is-background .el-pager li:not(.disabled) {
-        background-color: #fff;
-    }
-    .el-pagination.is-background .el-pager li:not(.disabled):hover {
-        color: #14989A;
-    }
-    .el-pagination.is-background .el-pager li:not(.disabled).active {
-        background-color: #14989A;
-        color: #fff;
     }
 }
 </style>

@@ -8,7 +8,8 @@ export default new Vuex.Store({
     state: {
         //这里放全局参数
         orgId: '',
-        areaName: ''
+        areaName: '',
+        theme: ''
     },
 
     mutations: {
@@ -19,6 +20,10 @@ export default new Vuex.Store({
 
         setAreaName(state, areaName) {
             state.areaName = areaName
+        },
+
+        setTheme(state, theme) {
+            state.theme = theme
         }
     },
 
@@ -26,6 +31,7 @@ export default new Vuex.Store({
         //get方法
         getOrgId: state => state.orgId,
         getAreaName: state => state.areaName,
+        getTheme: state => state.theme
     },
 
     actions: {

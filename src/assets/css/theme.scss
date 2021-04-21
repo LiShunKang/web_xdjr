@@ -1,0 +1,93 @@
+$greenThemeColor: #149799;
+$greenColor2: #ecfff6;
+$greenColor3: #8adfdf;
+$blueThemeColor: #409eff;
+$blueColor2: #ecf5ff;
+$blueColor3: #b3d8ff;
+
+@mixin primary_color{
+  [data-theme="green"] & {
+   color: $greenThemeColor !important
+  }
+  [data-theme="blue"] & {
+    color:$blueThemeColor !important
+  }
+}
+
+@mixin border_color{
+  [data-theme="green"] & {
+   border-color:$greenThemeColor !important
+  }
+  [data-theme="blue"] & {
+    border-color:$blueThemeColor !important
+  }
+}
+
+@mixin table_hover_color{
+  [data-theme="green"] & {
+   background: #effff7 !important
+  }
+  [data-theme="blue"] & {
+    border-color:#effeff !important
+  }
+}
+
+@mixin background{
+  [data-theme="green"] & {
+    background:$greenThemeColor !important
+  }
+  [data-theme="blue"] & {
+    background:$blueThemeColor !important
+  }
+}
+
+@mixin primary-button{
+  [data-theme="green"] & {
+    background:$greenThemeColor;
+    color: #FFF;
+    border-color: $greenThemeColor;
+    &:hover{
+      background:$greenThemeColor;
+      color: #FFF;
+      border-color: $greenThemeColor;
+      opacity: 0.8;
+    }
+  }
+  [data-theme="blue"] & {
+    background:$blueThemeColor;
+    color: #FFF;
+    border-color: $blueThemeColor;
+    &:hover{
+      background:$blueThemeColor;
+      color: #FFF;
+      border-color: $blueThemeColor;
+      opacity: 0.8;
+    }
+  }
+}
+
+@mixin default-button{
+  [data-theme="green"] & {
+    &:hover{
+      background:$greenColor2;
+      color: $greenThemeColor;
+      border-color: $greenColor3;
+    }
+  }
+  [data-theme="blue"] & {
+    &:hover{
+      background:$blueColor2;
+      color: $blueThemeColor;
+      border-color: $blueColor3;
+    }
+  }
+}
+
+@mixin text-button{
+  [data-theme="green"] & {
+    color: $greenThemeColor;
+  }
+  [data-theme="blue"] & {
+    color: $blueThemeColor;
+  }
+}

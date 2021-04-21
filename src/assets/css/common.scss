@@ -1,0 +1,75 @@
+@import "./theme.scss";
+
+*{
+    margin: 0;
+    padding: 0;
+}
+.treeDetail-container{
+    .el-table th.gutter {
+        display: table-cell !important;
+    }
+    .el-table__body .el-table__row.hover-row td {
+        // background: #effff7;
+        @include table_hover_color;
+    }
+    .btnBox{
+        .el-button{
+            @include primary-button;
+            color: #FFF;
+            &:hover{
+                opacity: 0.8;
+            }
+        }
+        .is-disabled {
+            opacity: 0.7;
+        }
+    } 
+    .table{
+        .el-button--text{
+            // color: #14989A;
+            @include text-button;
+        }
+        .is-disabled{
+            color: #C0C4CC !important;
+        }
+    }
+    .el-pagination.is-background .el-pager li:not(.disabled) {
+        background-color: #fff;
+    }
+    .el-pagination.is-background .el-pager li:not(.disabled):hover {
+        // color: #14989A;
+         @include primary_color;
+    }
+    .el-pagination.is-background .el-pager li:not(.disabled).active {
+        // background-color: #14989A;
+        @include background;
+        color: #fff;
+    }
+    
+}
+.el-select-dropdown__list .selected{
+    @include primary_color;
+}
+.el-message-box__btns .el-button--default{
+    @include default-button;
+}
+.el-message-box__btns .el-button--primary{
+    @include primary-button;
+}
+.dialogContainer{
+    .box-card .el-step__icon-inner {
+        font-size: 40px !important;
+    }
+    .el-button--default{
+        @include default-button;
+    }
+    .el-button--primary{
+        @include primary-button;
+    }
+    .el-tabs__header .is-active{
+        @include primary_color;
+    }
+    .el-step .is-finish{
+        @include primary_color;
+    }
+}

@@ -1,19 +1,74 @@
-import { get, post } from './http.js'
+import request from './http.js'
 
 // 获取表格数据
-export const getTableData = (data) => post( '/zfjr/ShowDeviceInfoController/getDeviceInfoDatagrid', data )
-
+export function getTableData(data) {
+    return request({
+        url: '/dist/terminal/ShowDeviceInfoController/getIotInfoDatagrid',
+        method: 'post',
+        params:data
+    })
+}
 // 注销
-export const delData = (data) => post( '/zfjr/plzxController/deleteIotInfo', data )
-
+export function delData(data) {
+    return request({
+        url: '/dist/terminal/plzxController/deleteIotInfo',
+        method: 'post',
+        params:data
+    })
+}
 // 获取div汇总数据
-export const getTopInfo = (data) => post( '/zfjr/getIoInfoDiv', data )
-
+export function getTopInfo(data) {
+    return request({
+        url: '/dist/terminal/ShowDeviceInfoController/getIotInfoDiv',
+        method: 'post',
+        params:data
+    })
+}
 // 根据关键字查询站房列表
-export const getZfListByName = (data) => post( '/zfjr/getDeviceInfoByName', data )
-
+export function getZfListByName(data) {
+    return request({
+        url: '/dist/terminal/ShowDeviceInfoController/getDeviceInfoByName',
+        method: 'post',
+        params:data
+    })
+}
 // 第一步到第二步的请求
-export const nextOne = (data) => post( '/zfjr/saveYySb', data )
-
+export function nextOne(data) {
+    return request({
+        url: '/dist/terminal/ShowDeviceInfoController/saveYySb',
+        method: 'post',
+        params:data
+    })
+}
 // 获取产品、工厂、项目
-export const getListInfo = (data) => get( '/zfjr/projectInfo', data )
+export function getListInfo(data) {
+    return request({
+        url: '/dist/terminal/ShowDeviceInfoController/projectInfo',
+        method: 'post',
+        params:data
+    })
+}
+// 第二步到第三步的请求
+export function addZfInfo(data) {
+    return request({
+        url: '/dist/terminal/iotController/addGatewayInfo',
+        method: 'post',
+        params:data
+    })
+}
+// 获取线图
+export function getLineSrc(data) {
+    return request({
+        url: '/dist/terminal/ShowDeviceInfoController/getGraphNameByZfId',
+        method: 'post',
+        params:data
+    })
+}
+// 导出
+export function exportList(data) {
+    return request({
+        url: '/dist/terminal/ShowDeviceInfoController/getGraphNameByZfId',
+        method: 'post',
+        params:data
+    })
+}
