@@ -336,7 +336,7 @@ export default {
                 startTime = this.changeTime(this.searchForm.time[0]);
                 endTime = this.changeTime(this.searchForm.time[1])
                 }
-                let url = '/dist/terminal/plzxController/dcZfExcel?'
+                let url = '/dist/terminalzf/plzxController/dcZfExcel?'
                 if(this.searchForm.esn){
                     url = url + 'ESN=' + this.searchForm.esn + "&"
                 }

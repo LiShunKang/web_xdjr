@@ -8,11 +8,11 @@ module.exports = {
       port: 20006,
       // 反向代理配置
       proxy: {
-          '/dist/terminal': {
+          '/dist/terminalzf': {
               target: 'http://20.47.197.214:9015/decloud-terminalaccess/',
               changeOrigin: true, //改变源 如果接口跨域，需要进行这个参数配置
               pathRewrite: {
-                  '^/dist/terminal': ''
+                  '^/dist/terminalzf': ''
               }
           },
       }
