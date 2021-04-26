@@ -320,7 +320,6 @@ export default {
     },
     methods:{
         getInfo(){
-            console.log(this.detailId)
             this.step = 2
             this.getIframeSrc(this.detailId)
         },
@@ -336,7 +335,6 @@ export default {
         // 获取产品、工厂、项目
         getListData(){
             getListInfo().then(res=>{
-                console.log(res)
                 // 产品列表
                 let cpArr = [];
                 let cpKeys = Object.keys(res.sscp);
@@ -349,7 +347,6 @@ export default {
                     cpArr.push(obj)
                 }
                 this.productList = cpArr;
-                console.log(this.productList)
 
                 // 厂家列表
                 let cjArr = [];
@@ -363,7 +360,6 @@ export default {
                     cjArr.push(obj)
                 }
                 this.manufactorList = cjArr;
-                console.log(this.manufactorList)
 
                 let xmArr = [];
                 let xmKeys = Object.keys(res.ssxm);
@@ -379,7 +375,6 @@ export default {
                     xmArr.push(obj)
                 }
                 this.projectList = xmArr;
-                console.log(this.projectList)
             })
         },
         // 获取变量
@@ -438,10 +433,7 @@ export default {
                                 byqId: this.modelForm.factory,
                                 areaName: this.$store.getters.getAreaName
                             }
-                            console.log(obj)
                             nextOne(obj).then(res=>{
-                                console.log('第一步')
-                                console.log(res)
                                 if(res.is_success){
                                     this.step = 1
                                 }else{
@@ -451,7 +443,6 @@ export default {
                                     })
                                 }
                             })
-                            console.log(this.typeName)
                         }
                     })
                 }
@@ -471,8 +462,6 @@ export default {
                             isFixed: "F"
                         }
                         addZfInfo(obj).then(res=>{
-                            console.log('第二步')
-                            console.log(res)
                             if(res.code == 2000){
                                 this.$message({
                                     type: 'success',
@@ -562,11 +551,8 @@ export default {
                 this.loading = true;
                 let Allarr = []
                 await getZfListByName(obj).then(res=>{
-                    console.log(res)
-                    console.log(res.data)
                     if(res.code == 2000){
                         let objArr = Object.values(res.data)
-                        console.log(objArr)
                         objArr.filter(item=>{
                             let setArr = item.split(':')
                             let obj = {
@@ -574,11 +560,8 @@ export default {
                                 pmsId: setArr[1],
                                 label: setArr[2]
                             }
-                            // console.log(obj)
                             Allarr.push(obj)
                         })
-                        console.log('Allarr')
-                        console.log(Allarr)
                         this.factoryList = Allarr
                     }
                     
@@ -599,12 +582,10 @@ export default {
         // 选择产品
         changeProduct(value){
             this.relationForm.manufactor = ''
-            console.log(value)
             let obj = {}
             obj = this.productList.find(item=>{
                 return item.value === value
             })
-            console.log(obj)
             this.relationForm.manufactor = obj.label
         },
         getIframeSrc(id){

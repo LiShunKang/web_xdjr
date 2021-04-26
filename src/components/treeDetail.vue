@@ -201,12 +201,13 @@ export default {
         let orgId;
         let loginUsrName;
         window.addEventListener('message', event => {
-            console.log('ces',event.data)
-            orgId = JSON.parse(event.data).orgId;
-            console.log(orgId)
-            loginUsrName = JSON.parse(event.data).loginUsrName;
-            this.saveMessage(orgId, loginUsrName)
-            this.search()
+            let data = JSON.parse(event.data)
+            if(data && data.orgId){
+                orgId = data.orgId;
+                loginUsrName = data.loginUsrName;
+                this.saveMessage(orgId, loginUsrName)
+                this.search()
+            }
         })
     },
     methods:{
@@ -257,8 +258,6 @@ export default {
         // 获得表格数据
         getTable(obj){
             getTableData(obj).then(res=>{
-                console.log("表格数据")
-                console.log(res)
                 this.total = 0
                 if(res.code == 2000){
                     this.tableData = res.data
@@ -273,10 +272,6 @@ export default {
                 orgId: this.$store.getters.getOrgId
             }
             getTopInfo(obj).then(res=>{
-                console.log('顶部数据')
-                console.log(res)
-                console.log(res.code)
-                console.log(res.data)
                 if(res.code == 2000){
                     this.dataSet = {
                         register: res.data.REG_SUCCESS_SUM,
@@ -309,7 +304,6 @@ export default {
         },
         // 编辑
         update(row){
-            console.log(row)
             this.detailId = row.id
             this.visible = true
         },
@@ -353,7 +347,6 @@ export default {
                     url = url + 'start_date=' + startTime + "&end_date=" + endTime + "&"
                 }
                 url = url.substring(0,url.length-1)
-                console.log(url)
                 window.location.href = url
                 // this.$message({
                 //     type: 'success',
@@ -375,8 +368,6 @@ export default {
                 type: 'warning'
             }).then(() => {
                 delData(id).then(res=>{
-                    console.log("注销")
-                    console.log(res)
                     if(res.code == 2000){
                         this.$message({
                             type: 'success',

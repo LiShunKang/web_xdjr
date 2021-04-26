@@ -6,17 +6,36 @@
 <script>
   export default {
     mounted() {
-        this.$store.commit('setTheme', 'green');
+      window.addEventListener('message', event => {
+        let data = JSON.parse(event.data);
+        if(data && data.color){
+          let theme = data.color;
+          this.saveMessage(theme)
+        }else{
+          this.saveMessage(' themea')
+        }
+      })
     },
     computed:{
       theme(){
         return this.$store.getters.getTheme
-      }
+      },
     },
     watch: {
       theme(val){
-        window.document.documentElement.setAttribute( "data-theme", val );
+        let themeType = ''
+         if(val == ' themeb'){
+          themeType = 'blue'
+        } else {
+          themeType = 'green'
+        }
+        window.document.documentElement.setAttribute( "data-theme", themeType );
       }
+    },
+    methods:{
+      saveMessage(theme) {
+          this.$store.commit('setTheme', theme);
+      },
     }
   }
 </script>
@@ -29,5 +48,6 @@ html,body{
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #FFF !important;
 }
 </style>
