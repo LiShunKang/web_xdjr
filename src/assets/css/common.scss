@@ -1,6 +1,14 @@
 @import "./theme.scss";
 
 .treeDetail-container{
+    .dataSet{
+        p{
+            @include primary_text_color
+        }
+    }
+    .el-form-item__label{
+        @include primary_text_color
+    }
     .el-table th.gutter {
         display: table-cell !important;
     }
@@ -41,6 +49,9 @@
         @include background;
         color: #fff;
     }
+    .el-pagination__jump,.el-pagination__total{
+        @include primary_text_color
+    }
     
 }
 .el-select-dropdown__list .selected{
@@ -69,3 +80,18 @@
         @include primary_color;
     }
 }
+.el-dialog,.el-card__body,.el-step__icon,.el-tabs__content{
+    @include body_background
+}
+
+.el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active{
+    @include body_background
+}
+
+.el-tabs__nav-scroll{
+    @include body_background1
+}
+
+// .el-input__inner{
+//     @include inputType
+// }

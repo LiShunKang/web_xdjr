@@ -5,11 +5,49 @@ $blueThemeColor: #117edb;
 $blueColor2: #ecf5ff;
 $blueColor3: #b3d8ff;
 
+@mixin body_background{
+  [data-theme="green"] & {
+   background: #FFF !important
+  }
+  [data-theme="blue"] & {
+    background: #FFF !important
+  }
+  [data-theme="dark"] & {
+    background: #0a1538 !important;
+  }
+}
+@mixin body_background1{
+  [data-theme="green"] & {
+   background: #E4E7ED !important
+  }
+  [data-theme="blue"] & {
+    background: #E4E7ED !important
+  }
+  [data-theme="dark"] & {
+    background: #0a1568 !important;
+  }
+}
+
+@mixin primary_text_color{
+  [data-theme="green"] & {
+    color: #000;
+  }
+  [data-theme="blue"] & {
+    color: #000;
+  }
+  [data-theme="dark"] & {
+    color: #FFF;
+  }
+}
+
 @mixin primary_color{
   [data-theme="green"] & {
    color: $greenThemeColor !important
   }
   [data-theme="blue"] & {
+    color:$blueThemeColor !important
+  }
+  [data-theme="dark"] & {
     color:$blueThemeColor !important
   }
 }
@@ -21,6 +59,9 @@ $blueColor3: #b3d8ff;
   [data-theme="blue"] & {
     border-color:$blueThemeColor !important
   }
+  [data-theme="dark"] & {
+    border-color:$blueThemeColor !important
+  }
 }
 
 @mixin table_hover_color{
@@ -30,6 +71,9 @@ $blueColor3: #b3d8ff;
   [data-theme="blue"] & {
     border-color:#effeff !important
   }
+  [data-theme="dark"] & {
+    border-color:#effeff !important
+  }
 }
 
 @mixin background{
@@ -37,6 +81,9 @@ $blueColor3: #b3d8ff;
     background:$greenThemeColor !important
   }
   [data-theme="blue"] & {
+    background:$blueThemeColor !important
+  }
+  [data-theme="dark"] & {
     background:$blueThemeColor !important
   }
 }
@@ -64,6 +111,17 @@ $blueColor3: #b3d8ff;
       opacity: 0.8;
     }
   }
+  [data-theme="dark"] & {
+    background:$blueThemeColor;
+    color: #FFF;
+    border-color: $blueThemeColor;
+    &:hover{
+      background:$blueThemeColor;
+      color: #FFF;
+      border-color: $blueThemeColor;
+      opacity: 0.8;
+    }
+  }
 }
 
 @mixin default-button{
@@ -81,6 +139,13 @@ $blueColor3: #b3d8ff;
       border-color: $blueColor3;
     }
   }
+  [data-theme="dark"] & {
+    &:hover{
+      background:$blueColor2;
+      color: $blueThemeColor;
+      border-color: $blueColor3;
+    }
+  }
 }
 
 @mixin text-button{
@@ -89,5 +154,21 @@ $blueColor3: #b3d8ff;
   }
   [data-theme="blue"] & {
     color: $blueThemeColor;
+  }
+  [data-theme="dark"] & {
+    color: $blueThemeColor;
+  }
+}
+
+@mixin inputType {
+  [data-theme="green"] & {
+    // color: $greenThemeColor;
+  }
+  [data-theme="blue"] & {
+    // color: $blueThemeColor;
+  }
+  [data-theme="dark"] & {
+    background: #0a1538;
+    color: #FFF;
   }
 }

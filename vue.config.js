@@ -6,6 +6,7 @@ module.exports = {
     devServer: {
       // 端口配置
       port: 20006,
+      open: true,
       // 反向代理配置
       proxy: {
           '/dist/terminalzf': {

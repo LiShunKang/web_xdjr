@@ -78,8 +78,8 @@
         </div>
         <div class="table">
             <el-table :data="tableData" style="width: 100%"
-            :header-cell-style="{textAlign: 'center',background: '#F3F3F3', color: '#333'}" 
-            :cell-style="{ textAlign: 'center', color: '#333'}">
+            :header-cell-style="this.$store.getters.getTheme == ' themeb'? {textAlign: 'center',background: '#0a1568', color: '#FFF'} : {textAlign: 'center',background: '#F3F3F3', color: '#333'}" 
+            :cell-style="this.$store.getters.getTheme == ' themeb'? { textAlign: 'center', color: '#FFF', background: '#0a1538'} : { textAlign: 'center', color: '#333'}">
                 <el-table-column type="index"></el-table-column>
                 <el-table-column prop="rely_name" label="关联设备" ></el-table-column>
                 <!-- <el-table-column label="设备类型">

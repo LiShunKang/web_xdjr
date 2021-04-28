@@ -6,6 +6,7 @@
 <script>
   export default {
     mounted() {
+      this.saveMessage(' themea')
       window.addEventListener('message', event => {
         let data = JSON.parse(event.data);
         if(data && data.color){
@@ -24,10 +25,12 @@
     watch: {
       theme(val){
         let themeType = ''
-         if(val == ' themeb'){
+         if(val == ' themea'){
+          themeType = 'green'
+        } else if(val == ' themec') {
           themeType = 'blue'
         } else {
-          themeType = 'green'
+          themeType = 'dark'
         }
         window.document.documentElement.setAttribute( "data-theme", themeType );
       }
@@ -48,6 +51,6 @@ html,body{
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #FFF !important;
+  @include body_background
 }
 </style>

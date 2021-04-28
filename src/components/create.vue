@@ -98,7 +98,7 @@
                     <div style="margin: 40px auto;width: 50%">
                         <el-form :model="relationForm" :rules="rules" ref="relationForm" label-width="120px" size="small">
                             <el-form-item :label="modelType">
-                                <span style="padding: 0 16px">{{typeName}}</span>
+                                <span class="typeNameBox" style="padding: 0 16px">{{typeName}}</span>
                             </el-form-item>
                             <el-form-item label="终端名称：" prop="terminalName">
                                 <el-input v-model="relationForm.terminalName" style="width:240px"></el-input>
@@ -272,8 +272,6 @@ export default {
     watch:{
         visible(val){
             this.dialogVisible = val
-            // this.getNameRuleList()
-            // this.getVariableList()
             this.activeName = 'second'
             this.step = 0
         },
@@ -623,6 +621,15 @@ export default {
         position: relative;
         top: 3px;
         left: 10px;
+    }
+    .typeNameBox{
+        display: block;
+        width: 240px;
+        height: 32px;
+        padding: 0 15px;
+        box-sizing: border-box;
+        border-radius: 4px;
+        background: #FFF !important;
     }
     
 }
