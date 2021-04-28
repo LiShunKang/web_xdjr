@@ -11,7 +11,7 @@ module.exports = {
       proxy: {
           '/dist/terminalzf': {
               target: 'http://20.47.197.214:9015/decloud-terminalaccess/',
-              changeOrigin: true, //改变源 如果接口跨域，需要进行这个参数配置
+              changeOrigin: true,
               pathRewrite: {
                   '^/dist/terminalzf': ''
               }
